@@ -1,6 +1,12 @@
 # Rubys Admin Portal (ruby.dranzo.com): architecture and plan
 
-Status: **proposal, waiting for approval.** Nothing has been built, deployed or changed yet.
+Status: **approved and deployed** (2026-11-24). Kept as the original plan.
+
+> **Changed after approval:** sign-in. Instead of a Cloudflare Access gate plus each admin's own
+> login, the portal now has **one sign-in page** (Admin ID + password) that signs in to each admin
+> through that admin's own login, and the switcher appears only after it. Cloudflare Access was
+> dropped because it would add a second login page. See [CHANGES.md](CHANGES.md).
+
 Date: 2026-11-24
 
 ## 1. What exists today (Phase 1 findings)

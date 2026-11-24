@@ -2,16 +2,20 @@
 
 One place to manage **Whispering Willows** and **Teak Town**: https://ruby.dranzo.com
 
-The portal is a small static shell: a top bar with the **Switch Admin Panel** drop-down and a
-profile menu, and below it the selected admin, shown live from its own site:
+The portal opens on **one sign-in page** (Admin ID + password). Only after signing in does it show
+a top bar with the **Switch Admin Panel** drop-down and a profile menu, and below it the selected
+admin, shown live from its own site:
 
 | Panel | Admin | Source |
 | --- | --- | --- |
 | Whispering Willows | https://whisperingwillows.dranzo.com/admin/ | `C:\WhisperingWillows` |
 | TeakTown | https://theteaktown.com/admin/ | `C:\TeakTownAdmin` |
 
-Each admin keeps its own sign-in, roles, API, database and uploads. The portal holds no data,
-tokens or secrets, and never calls either API. The browser keeps the two admins apart (different
+The sign-in page hands the Admin ID and password to each admin's own frame, and each admin signs
+in through its own API, so one sign-in opens every admin where that account exists with the same
+password. An admin that doesn't accept it asks for its own sign-in inside its panel. Each admin
+keeps its own accounts, roles, API, database and uploads. The portal holds no data, tokens or
+passwords, and never calls either API. The browser keeps the two admins apart (different
 origins). Both admins are kept loaded, so switching is instant; the address (`/ww/...`, `/tt/...`)
 follows the admin's page, so a refresh or a shared link reopens the same place.
 
@@ -43,8 +47,8 @@ Portal: http://localhost:5190. The admins only trust this local portal while the
 src/
 ├── App.tsx              # state, admin messages, address sync, sign out of all
 ├── apps.ts              # the two admins: names, origins, colours
-├── components/          # TopBar, AppSwitcher, UserMenu, AdminFrame, RubyMark
-└── lib/                 # route (addresses), identity (Cloudflare Access), menu
+├── components/          # LoginScreen, SignInCard, TopBar, AppSwitcher, UserMenu, AdminFrame, RubyMark
+└── lib/                 # route (addresses), menu
 deploy/htaccess.template # security headers and routing for public_html
 scripts/                 # build, package, package-admin, zip
 docs/                    # PLAN.md, DEPLOY.md, CHANGES.md

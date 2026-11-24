@@ -57,6 +57,28 @@ Live checks after deploy: portal 200 with its CSP; both admins 200 with
 `frame-ancestors 'self' https://ruby.dranzo.com`; both APIs unchanged (401 without a session);
 Teak Town website pages unchanged. In Chrome, the live portal loaded both admins and switching worked.
 
+### One sign-in page (2026-11-24, later the same day)
+
+Requested: a single portal login (Admin ID + password); panels can only be switched after it.
+
+- **Portal**: new `LoginScreen` is the only thing shown until signed in (no top bar, no switcher,
+  panels hidden and inert). Both admins are framed from the start; on sign-in the portal sends the
+  Admin ID and password to each admin's own frame, and each admin signs in through its own
+  `/api/login`. Tokens stay in each admin's own storage; the portal keeps neither the password nor
+  any token. An admin that refuses the details (account not there, different password, inactive)
+  shows its own "Sign in to …" card inside the portal. "Sign out of all" returns to the login page.
+- **Both admins**: `EmbedBridge.tsx` also handles a `login` message (exact portal origin and
+  parent frame only) by calling the admin's normal `login()`, and answers `login-result`.
+- **Portal**: fixed the "not responding" timer, which restarted on every render and so never fired.
+- **Cloudflare Access**: dropped from the plan. It would add a second login page in front.
+- **Deployed** in this order: WW admin, TT admin (backups in `~/rubys-backups-20261124-2/`), then
+  the portal (backup in `/home/rubydranzo/portal-backups/public_html-20261124-1216/`).
+- Live check: `ruby.dranzo.com` shows only the login page (also for deep links); a non-existent
+  account is refused by both live admins with "Incorrect email or password.", no switcher shown.
+
+Note: one sign-in opens an admin only where the same Admin ID (email) and password exist in that
+admin's Users page. Otherwise that admin asks for its own sign-in inside the portal.
+
 ## Testing done (local)
 `python tests/test_portal.py` against both admins running locally (`npm run local`) and the portal
 dev server. Checks cover loading, sign-in, switching without reload, refresh, data and

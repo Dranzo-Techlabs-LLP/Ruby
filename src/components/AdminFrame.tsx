@@ -1,4 +1,4 @@
-import { forwardRef, useEffect } from 'react'
+import { forwardRef, useEffect, useRef } from 'react'
 import { ExternalLink, RotateCw, TriangleAlert } from 'lucide-react'
 import { directUrl, frameUrl, type AdminApp } from '../apps'
 import type { FrameState } from '../types'
@@ -10,6 +10,8 @@ interface Props {
   app: AdminApp
   state: FrameState
   active: boolean
+  /** Show the "not responding" / "not set up" notices (only once signed in to the portal). */
+  showProblems: boolean
   onLoad: () => void
   onStall: () => void
   onRetry: () => void
@@ -20,14 +22,18 @@ interface Props {
  * and the admin keeps its page and any half-filled form.
  */
 export const AdminFrame = forwardRef<HTMLIFrameElement, Props>(function AdminFrame(
-  { app, state, active, onLoad, onStall, onRetry },
+  { app, state, active, showProblems, onLoad, onStall, onRetry },
   ref,
 ) {
+  // The latest callback, so re-renders don't restart the timer below.
+  const onStallRef = useRef(onStall)
+  onStallRef.current = onStall
+
   useEffect(() => {
     if (!state.loaded || state.connected || state.stalled) return
-    const t = setTimeout(onStall, STALL_MS)
+    const t = setTimeout(() => onStallRef.current(), STALL_MS)
     return () => clearTimeout(t)
-  }, [state.loaded, state.connected, state.stalled, onStall])
+  }, [state.loaded, state.connected, state.stalled])
 
   // Hidden frames are inert: no focus, no screen reader, no clicks.
   const hidden = active ? {} : ({ inert: '', 'aria-hidden': true } as Record<string, unknown>)
@@ -65,14 +71,14 @@ export const AdminFrame = forwardRef<HTMLIFrameElement, Props>(function AdminFra
         </div>
       )}
 
-      {!app.origin && (
+      {showProblems && !app.origin && (
         <Notice
           title={`${app.name} is not set up in the portal yet`}
           text="Its address is missing from the portal's settings (.env.production)."
         />
       )}
 
-      {state.stalled && (
+      {showProblems && state.stalled && (
         <div className="absolute inset-x-3 bottom-3 z-10 sm:inset-x-auto sm:right-5 sm:bottom-5 sm:max-w-md" role="alert">
           <div className="flex gap-3 rounded-xl border border-amber-200 bg-white p-4 text-slate-800 shadow-lg shadow-black/10">
             <TriangleAlert size={20} className="mt-0.5 shrink-0 text-amber-500" aria-hidden="true" />

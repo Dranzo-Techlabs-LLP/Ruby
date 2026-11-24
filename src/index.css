@@ -30,6 +30,14 @@
   }
 }
 
+/* The single sign-in page */
+.login-bg {
+  background-color: var(--color-ink);
+  background-image:
+    radial-gradient(ellipse 80% 55% at 50% -10%, rgb(200 23 63 / 0.28), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 110%, rgb(79 163 169 / 0.12), transparent 70%);
+}
+
 /* Switching panels: a short cross-fade. Hidden frames stay loaded but invisible. */
 .frame-layer {
   opacity: 0;

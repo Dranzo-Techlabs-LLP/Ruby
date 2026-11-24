@@ -64,7 +64,7 @@ export function AppSwitcher({ active, frames, onSwitch }: Props) {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold">{app.name}</span>
                   <span className="block truncate text-xs text-slate-500">
-                    {user ? `Signed in as ${user.name}` : frames[app.id].connected ? 'Not signed in' : hostOf(app.origin)}
+                    {user ? `Signed in as ${user.name}` : frames[app.id].connected ? 'Sign-in needed' : hostOf(app.origin)}
                   </span>
                 </span>
                 {checked && <Check size={16} className="shrink-0 text-ruby-600" aria-hidden="true" />}

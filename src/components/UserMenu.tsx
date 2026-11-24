@@ -1,11 +1,9 @@
 import { Loader2, LogOut, ShieldCheck } from 'lucide-react'
 import { APPS, type AppId } from '../apps'
-import type { PortalIdentity } from '../lib/identity'
 import { useMenu } from '../lib/menu'
 import type { AdminUser, FrameState } from '../types'
 
 interface Props {
-  identity: PortalIdentity | null
   activeUser: AdminUser | null
   frames: Record<AppId, FrameState>
   signingOut: boolean
@@ -18,9 +16,10 @@ function initials(name: string): string {
 }
 
 /** Top-right profile button: who is signed in where, and "Sign out of all". */
-export function UserMenu({ identity, activeUser, frames, signingOut, onSignOut }: Props) {
+export function UserMenu({ activeUser, frames, signingOut, onSignOut }: Props) {
   const m = useMenu()
-  const label = identity?.name ?? activeUser?.name ?? ''
+  const anyUser = activeUser ?? APPS.map((a) => frames[a.id].user).find(Boolean) ?? null
+  const label = anyUser?.name ?? ''
 
   return (
     <div className="relative">
@@ -48,8 +47,8 @@ export function UserMenu({ identity, activeUser, frames, signingOut, onSignOut }
           className="menu-pop absolute right-0 top-full z-50 mt-2 w-[min(18rem,calc(100vw-1.5rem))] origin-top-right rounded-xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl shadow-black/15"
         >
           <div className="px-2.5 pb-2 pt-1.5">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Portal</div>
-            <div className="truncate text-sm font-semibold">{identity?.email ?? 'Rubys Admin'}</div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Signed in</div>
+            <div className="truncate text-sm font-semibold">{anyUser?.email || anyUser?.name || 'Rubys Admin'}</div>
           </div>
           <div className="space-y-1.5 border-t border-slate-100 px-2.5 py-2">
             {APPS.map((app) => {
