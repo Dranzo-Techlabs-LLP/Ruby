@@ -1,0 +1,12 @@
+node_modules
+dist
+release
+*.local
+*.tsbuildinfo
+.DS_Store
+
+# Source backups of the two admins: they contain local config.php files. Never deploy or commit.
+backups/
+
+# Local test output
+tests/screenshots/

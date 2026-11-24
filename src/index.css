@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ink: #16121a; /* top bar */
+
+  --color-ruby-50: #fdf2f4;
+  --color-ruby-100: #fbe3e8;
+  --color-ruby-500: #e0294f;
+  --color-ruby-600: #c8173f;
+  --color-ruby-700: #a40f33;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background-color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ruby-500);
+    outline-offset: 2px;
+  }
+}
+
+/* Switching panels: a short cross-fade. Hidden frames stay loaded but invisible. */
+.frame-layer {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms ease-out, visibility 0s linear 180ms;
+}
+.frame-layer.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 180ms ease-out, visibility 0s;
+  z-index: 1;
+}
+
+/* The panel name slides in when it changes */
+.app-badge {
+  animation: badge-in 220ms ease-out;
+}
+@keyframes badge-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
+.menu-pop {
+  animation: menu-in 120ms ease-out;
+}
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame-layer,
+  .frame-layer.is-active {
+    transition: none;
+  }
+  .app-badge,
+  .menu-pop {
+    animation: none;
+  }
+}
